@@ -1,14 +1,15 @@
 package com.silverhetch.dashboard128.imagewidget
 
-import android.appwidget.AppWidgetManager
+import android.app.PendingIntent.FLAG_ONE_SHOT
+import android.app.PendingIntent.getActivity
+import android.appwidget.AppWidgetManager.EXTRA_APPWIDGET_ID
+import android.appwidget.AppWidgetManager.getInstance
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.RectF
 import android.widget.RemoteViews
 import androidx.core.app.JobIntentService
-import com.caverock.androidsvg.RenderOptions
 import com.caverock.androidsvg.SVG
 import com.silverhetch.dashboard128.R
 import com.silverhetch.dashboard128.imagewidget.model.ImageWidgetsImpl
@@ -45,16 +46,31 @@ class WidgetUpdateService : JobIntentService() {
         if (image.documentWidth == -1f) {
           return
         }
-        AppWidgetManager.getInstance(this).apply {
+        getInstance(this).apply {
           updateAppWidget(
               widget.id(),
               RemoteViews(packageName, R.layout.widget_image).apply {
-
+                setOnClickPendingIntent(
+                    R.id.widgetImage_image,
+                    getActivity(
+                        this@WidgetUpdateService,
+                        0,
+                        Intent(
+                            this@WidgetUpdateService,
+                            ImageWidgetConfigurationActivity::class.java
+                        ).apply {
+                          putExtra(
+                              EXTRA_APPWIDGET_ID,
+                              widget.id()
+                          )
+                        }, FLAG_ONE_SHOT
+                    )
+                )
                 setImageViewBitmap(
                     R.id.widgetImage_image,
                     Bitmap.createBitmap(
-                        Math.ceil(image.documentWidth.toDouble()).toInt()*4,
-                        Math.ceil(image.documentHeight.toDouble()).toInt()*4,
+                        Math.ceil(image.documentWidth.toDouble()).toInt() * 4,
+                        Math.ceil(image.documentHeight.toDouble()).toInt() * 4,
                         Bitmap.Config.ARGB_8888
                     ).apply {
                       image.setDocumentViewBox(

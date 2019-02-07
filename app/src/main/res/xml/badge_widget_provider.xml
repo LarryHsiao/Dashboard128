@@ -3,6 +3,7 @@
     android:configure="com.silverhetch.dashboard128.imagewidget.ImageWidgetConfigurationActivity"
     android:initialLayout="@layout/widget_image"
     android:minWidth="40dp"
+    android:updatePeriodMillis="900000"
     android:minHeight="40dp"
     android:resizeMode="horizontal|vertical" />
 
