@@ -14,12 +14,6 @@ class ImageWidgetProvider : AppWidgetProvider() {
       context?.let {
         widgetIds.forEach { widgetId ->
           WidgetUpdateService.enqueue(context, widgetId)
-          JobIntentService.enqueueWork(
-              context,
-              WidgetUpdateService::class.java,
-              ServiceJob.ID_IMAGE_WIDGET_UPDATE_SERVICE,
-              Intent()
-          )
         }
       }
     }

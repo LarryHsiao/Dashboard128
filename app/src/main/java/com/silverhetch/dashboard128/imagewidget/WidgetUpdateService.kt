@@ -1,7 +1,6 @@
 package com.silverhetch.dashboard128.imagewidget
 
-import android.app.PendingIntent.FLAG_ONE_SHOT
-import android.app.PendingIntent.getActivity
+import android.app.PendingIntent.*
 import android.appwidget.AppWidgetManager.EXTRA_APPWIDGET_ID
 import android.appwidget.AppWidgetManager.getInstance
 import android.content.Context
@@ -54,7 +53,7 @@ class WidgetUpdateService : JobIntentService() {
                     R.id.widgetImage_image,
                     getActivity(
                         this@WidgetUpdateService,
-                        0,
+                        widget.id(),
                         Intent(
                             this@WidgetUpdateService,
                             ImageWidgetConfigurationActivity::class.java
@@ -63,7 +62,7 @@ class WidgetUpdateService : JobIntentService() {
                               EXTRA_APPWIDGET_ID,
                               widget.id()
                           )
-                        }, FLAG_ONE_SHOT
+                        }, 0
                     )
                 )
                 setImageViewBitmap(
