@@ -12,14 +12,16 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
+println(thea.versionIndicator.apply(""))
+
 android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.silverhetch.dashboard128"
         minSdkVersion 24
         targetSdkVersion 28
-        versionCode 1
-        versionName "1.0"
+        versionCode thea.version.versionByFlavor("").versionCode()
+        versionName thea.version.versionByFlavor("").versionName()
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
