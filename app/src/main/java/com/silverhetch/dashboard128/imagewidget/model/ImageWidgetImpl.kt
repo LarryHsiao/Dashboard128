@@ -9,6 +9,9 @@ import java.nio.channels.Channels
 class ImageWidgetImpl(private val context: Context,
                       private val widgetIndex: Int
 ) : ImageWidget {
+  companion object {
+    private const val SETUP_REQUIRED_URL = "https://setup_required"
+  }
   private val imageStorageHome = File(context.filesDir, "image_widget")
   private val sharedPreferences = context.getSharedPreferences(
       name(),
@@ -24,7 +27,12 @@ class ImageWidgetImpl(private val context: Context,
   }
 
   override fun url(): URL {
-    return URL(sharedPreferences.getString("url", "https://img.shields.io/badge/Setup-required-red.svg"))
+    return URL(
+        sharedPreferences.getString(
+            "url",
+            SETUP_REQUIRED_URL
+        )
+    )
   }
 
   override fun file(): File {
@@ -33,6 +41,10 @@ class ImageWidgetImpl(private val context: Context,
 
   override fun validate() {
     try {
+      if (url().sameFile(URL(SETUP_REQUIRED_URL))){
+        assetImage("Setup-required-red.svg")
+        return
+      }
       FileOutputStream(file().apply {
         parentFile.mkdirs()
         if (exists()) {
@@ -44,18 +56,19 @@ class ImageWidgetImpl(private val context: Context,
           Long.MAX_VALUE
       )
     } catch (e: Exception) {
-      errorImage()
+      e.printStackTrace()
+      assetImage("Loading-Failed-red.svg")
     }
   }
 
-  private fun errorImage() {
+  private fun assetImage(fileName:String) {
     FileOutputStream(file().apply {
       parentFile.mkdirs()
       if (exists()) {
         delete()
       }
     }).channel.transferFrom(
-        Channels.newChannel(context.assets.open("Loading-Failed-red.svg")),
+        Channels.newChannel(context.assets.open(fileName)),
         0,
         Long.MAX_VALUE
     )
